@@ -1,14 +1,14 @@
 // Importa a biblioteca 'winston', uma ferramenta popular para logging em Node.js.
-const winston = require("winston");
+const winston = require('winston');
 // Importa a classe AppError para poder verificar se um erro é "confiável".
-const { AppError } = require("./appErrors");
+const { AppError } = require('./appErrors');
 
 // Cria uma instância do logger do Winston.
 const LogErrors = winston.createLogger({
   // Configura os "transportes", que são os destinos para onde os logs serão enviados.
   transports: [
     new winston.transports.Console(), // Envia os logs para o console.
-    new winston.transports.File({ filename: "app_error.log" }), // Salva os logs em um arquivo.
+    new winston.transports.File({ filename: 'app_error.log' }), // Salva os logs em um arquivo.
   ],
 });
 
@@ -18,13 +18,13 @@ class ErrorHandler {
   constructor() {}
 
   async logError(err) {
-    console.log("==================== Start Error Logger ===============");
+    console.log('==================== Start Error Logger ===============');
     LogErrors.log({
       private: true,
-      level: "error",
+      level: 'error',
       message: `${new Date()}-${JSON.stringify(err)}`,
     });
-    console.log("==================== End Error Logger ===============");
+    console.log('==================== End Error Logger ===============');
     return false;
   }
 
@@ -42,14 +42,14 @@ class ErrorLogger {
   constructor() {}
   // Método para registrar um erro.
   async logError(err) {
-    console.log("==================== Start Error Logger ===============");
+    console.log('==================== Start Error Logger ===============');
     // Usa a instância do Winston para registrar o erro.
     LogErrors.log({
       private: true, // Metadado personalizado.
-      level: "error", // Nível do log.
+      level: 'error', // Nível do log.
       message: `${new Date()}-${JSON.stringify(err)}`, // Formata a mensagem de log.
     });
-    console.log("==================== End Error Logger ===============");
+    console.log('==================== End Error Logger ===============');
     return false;
   }
 
@@ -76,12 +76,12 @@ const errorHandlerMiddleware = async (err, req, res, next) => {
 
   // ATENÇÃO: Registrar múltiplos listeners para o mesmo evento ('uncaughtException') como feito aqui é problemático.
   // O segundo listener sobrescreverá o primeiro. O ideal é ter apenas um listener para este evento.
-  process.on("uncaughtException", (reason, promise) => {
-    console.log(reason, "UNHANDLED");
+  process.on('uncaughtException', (reason, promise) => {
+    console.log(reason, 'UNHANDLED');
     throw reason; // Re-lançar a exceção geralmente faz o processo travar. A melhor prática é logar e sair.
   });
 
-  process.on("uncaughtException", (error) => {
+  process.on('uncaughtException', (error) => {
     errorLogger.logError(error);
     // A lógica aqui sugere que se o erro não for confiável, o processo deveria ser reiniciado.
     if (!errorLogger.isTrustError(error)) {

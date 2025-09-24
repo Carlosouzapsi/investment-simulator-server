@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   mongo:
@@ -6,6 +6,6 @@ services:
     container_name: investment_simulator_mongo
     restart: always
     ports:
-      - "27017:27017"
+      - '27017:27017'
     volumes:
       - ./data:/data/db

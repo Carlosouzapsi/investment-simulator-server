@@ -1,13 +1,13 @@
-const UserModel = require("../../database/models/User");
-const UserRepository = require("../../database/repository/UserRepository");
+const UserModel = require('../../database/models/User');
+const UserRepository = require('../../database/repository/UserRepository');
 
 const userRepository = new UserRepository();
 
-test("Should create a new user", async () => {
+test('Should create a new user', async () => {
   const userData = {
-    name: "test new user",
-    email: "user@email.com",
-    password: "123456",
+    name: 'test new user',
+    email: 'user@email.com',
+    password: '123456',
   };
 
   const createdUser = await userRepository.createUserRepository(userData);
@@ -18,31 +18,33 @@ test("Should create a new user", async () => {
   expect(createdUser.email).toBe(userData.email);
 });
 
-test("Should not create an user with duplicated email", async () => {
+test('Should not create an user with duplicated email', async () => {
   const userData = {
-    name: "test user email",
-    email: "duplicate@email.com",
-    password: "123456",
+    name: 'test user email',
+    email: 'duplicate@email.com',
+    password: '123456',
   };
 
   const duplicatedUserData = {
-    name: "test user email",
-    email: "duplicate@email.com",
-    password: "123456",
+    name: 'test user email',
+    email: 'duplicate@email.com',
+    password: '123456',
   };
   // create a first user
   await UserModel.create(userData);
   // user creation with duplicated email
-  expect(
-    userRepository.createUserRepository(duplicatedUserData).rejects.toThrow
-  );
+  // Para testar se uma promessa é rejeitada, a estrutura correta é:
+  // await expect(promessa).rejects.toThrow();
+  await expect(
+    userRepository.createUserRepository(duplicatedUserData)
+  ).rejects.toThrow();
 });
 
-test("Should find an user by email", async () => {
+test('Should find an user by email', async () => {
   const userData = {
-    name: "test user email",
-    email: "email.test@email.com",
-    password: "123456",
+    name: 'test user email',
+    email: 'email.test@email.com',
+    password: '123456',
   };
   const foundUser = await userRepository.findUserByEmailRepository(
     userData.email
@@ -55,11 +57,11 @@ test("Should find an user by email", async () => {
   expect(foundUser.email).toBe(userData.email);
 });
 
-test("Should find an user by Id", async () => {
+test('Should find an user by Id', async () => {
   const userData = {
-    name: "IDtest",
-    email: "idtest@email.com",
-    password: "123456",
+    name: 'IDtest',
+    email: 'idtest@email.com',
+    password: '123456',
   };
 
   // Preparação: Cria um usuário para ter um ID para buscar
@@ -72,22 +74,22 @@ test("Should find an user by Id", async () => {
   expect(foundUser.email).toBe(userData.email);
 });
 
-test("Should update an user name", async () => {
+test('Should update an user name', async () => {
   const userData = {
-    name: "oldName",
-    email: "nameupdate@email.com",
-    password: "123456",
+    name: 'oldName',
+    email: 'nameupdate@email.com',
+    password: '123456',
   };
 
   // cria o usuário direto no banco
   const user = await UserModel.create(userData);
   // faz o update do nome do usuário
-  const newName = "updatedName";
+  const newName = 'updatedName';
   const updatedUser = await userRepository.updateUserRepository(user._id, {
     name: newName, // overrides old name
   });
   // encontra o usuário no banco
   const foundUpdatedUser = await User.findById(updatedUser._id);
 
-  expect(foundUpdatedUser.name).toBe("Updated Name");
+  expect(foundUpdatedUser.name).toBe('Updated Name');
 });

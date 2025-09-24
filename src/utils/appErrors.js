@@ -46,7 +46,7 @@ class APIError extends AppError {
   constructor(
     name,
     statusCode = STATUS_CODES.INTERNAL_ERROR, // Por padrão, um erro de API é um erro interno 500.
-    description = "Internal Server Error",
+    description = 'Internal Server Error',
     isOperational = true // Assume que a maioria dos erros de API são operacionais (ex: falha na validação).
   ) {
     // Chama o construtor da classe pai (AppError) com os valores definidos.
@@ -57,10 +57,10 @@ class APIError extends AppError {
 // Uma classe específica para erros de "Bad Request" (400).
 // Usada quando a requisição do cliente está malformada ou faltam dados.
 class BadRequestError extends AppError {
-  constructor(description = "Bad request", logingErrorResponse) {
+  constructor(description = 'Bad request', logingErrorResponse) {
     // Chama o construtor da classe base (AppError) com valores fixos para um erro 400.
     super(
-      "NOT FOUND", // O nome aqui parece incorreto, deveria ser algo como "BAD REQUEST".
+      'NOT FOUND', // O nome aqui parece incorreto, deveria ser algo como "BAD REQUEST".
       STATUS_CODES.BAD_REQUEST,
       description,
       true, // É um erro operacional.
@@ -73,10 +73,10 @@ class BadRequestError extends AppError {
 // Uma classe específica para erros de validação (também um erro 400).
 // Usada quando os dados enviados pelo cliente falham nas regras de validação (ex: e-mail inválido).
 class ValidationError extends AppError {
-  constructor(description = "Validation Error", errorStack) {
+  constructor(description = 'Validation Error', errorStack) {
     // Chama o construtor da classe base com valores para um erro de validação.
     super(
-      "BAD REQUEST",
+      'BAD REQUEST',
       STATUS_CODES.BAD_REQUEST,
       description,
       true, // É um erro operacional.

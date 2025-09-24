@@ -1,9 +1,9 @@
-const { UserModel } = require("../models");
+const { UserModel } = require('../models');
 const {
   APIError,
   BadRequestError,
   STATUS_CODES,
-} = require("../../utils/appErrors");
+} = require('../../utils/appErrors');
 
 class UserRepository {
   async createUserRepository({ name, email, password }) {
@@ -17,9 +17,9 @@ class UserRepository {
       return userResult;
     } catch (error) {
       throw new APIError(
-        "API Error",
+        'API Error',
         STATUS_CODES.INTERNAL_ERROR,
-        "Unable to create user"
+        'Unable to create user'
       );
     }
   }
