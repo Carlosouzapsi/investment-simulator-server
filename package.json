@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:watch": "jest --watchAll",
     "start": "NODE_ENV=dev nodemon ./src/app.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

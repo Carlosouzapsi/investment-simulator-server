@@ -5,16 +5,16 @@ let mongoServer;
 
 // Este hook é executado uma vez antes de todos os testes neste arquivo.
 beforeAll(async () => {
-  // Cria uma nova instância do servidor MongoDB em memória.
   mongoServer = await MongoMemoryServer.create();
+});
+
+beforeEach(async () => {
   // Pega a URI de conexão do servidor em memória.
   const mongoUri = mongoServer.getUri();
   await mongoose.connect(mongoUri);
 });
 
 afterAll(async () => {
-  // Desconecta o Mongoose.
-  await mongoose.disconnect();
   // Para a instância do servidor MongoDB em memória.
   await mongoServer.stop();
 });
@@ -27,4 +27,6 @@ afterEach(async () => {
     const collection = collections[key];
     await collection.deleteMany();
   }
+  // Desconecta o Mongoose.
+  await mongoose.disconnect();
 });

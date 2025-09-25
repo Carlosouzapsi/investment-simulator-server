@@ -105,8 +105,13 @@ const config = {
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
 
-  // Run tests from one or more projects
-  // projects: undefined,
+  // A configuração de 'projects' foi removida para simplificar o setup do Jest.
+  // Em alguns casos, especialmente com setups assíncronos como o do mongodb-memory-server,
+  // a configuração de múltiplos projetos com 'displayName' pode causar conflitos
+  // na inicialização do ambiente de teste, levando a erros inesperados.
+  // Em vez de usar projetos separados, um único padrão 'testMatch' é usado para
+  // encontrar todos os arquivos de teste (unitários e de integração).
+  testMatch: ['<rootDir>/src/tests/**/*.spec.js'],
 
   // Use this configuration option to add custom reporters to Jest
   // reporters: undefined,
@@ -188,7 +193,10 @@ const config = {
   // unmockedModulePathPatterns: undefined,
 
   // Indicates whether each individual test should be reported during the run
-  // verbose: undefined,
+  // A opção 'verbose' quando definida como 'true' faz com que o Jest
+  // exiba um relatório detalhado para cada teste individual,
+  // melhorando a visualização de sucessos e falhas diretamente no console.
+  verbose: true,
 
   // An array of regexp patterns that are matched against all source file paths before re-running tests in watch mode
   // watchPathIgnorePatterns: [],
