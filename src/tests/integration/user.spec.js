@@ -1,6 +1,6 @@
 const request = require('supertest');
-const app = require('../../app');
-
+const express = require('express');
+const app = express();
 describe('User API - Integration Tests', () => {
   it('Should create a new user', async () => {
     // Dados de exemplo para o novo usuário:
