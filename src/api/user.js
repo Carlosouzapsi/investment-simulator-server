@@ -1,5 +1,5 @@
 const UserService = require('../services/UserService');
-const UserAuth = require('./middlewares/auths');
+const UserAuth = require('./middlewares/auth');
 
 module.exports = (app) => {
   const service = new UserService();

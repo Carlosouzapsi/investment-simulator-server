@@ -7,7 +7,7 @@ const {
   ValidatePassword,
   generateSignature,
 } = require('../utils');
-const { APIError, BadRequestError } = require('../utils/app-errors');
+const { APIError, BadRequestError } = require('../utils/appErrors');
 
 // All Business logic will be here
 class UserService {
@@ -22,7 +22,7 @@ class UserService {
 
       let userPassword = await GeneratePassword(password, salt);
 
-      const existentUser = await this.repository.findUserByEmailRepository({
+      const existentUser = await this.repository.createUserRepository({
         name,
         email,
         password: userPassword,

@@ -16,6 +16,7 @@ beforeAll(async () => {
   // Isso é CRUCIAL para os testes de integração, pois permite que a aplicação
   // Express (carregada via 'supertest') se conecte ao banco de dados de teste.
   process.env.MONGO_URI = mongoUri;
+  // A definição de APP_SECRET foi movida para jest.env.js para garantir a ordem de execução correta.
 });
 
 // HOOK: EXECUTADO ANTES DE CADA TESTE INDIVIDUAL

@@ -140,10 +140,12 @@ const config = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  // setupFiles: [],
+  // 'setupFiles' é executado ANTES do framework de teste ser instalado no ambiente.
+  // É o lugar perfeito para definir variáveis de ambiente globais.
+  setupFiles: ['<rootDir>/jest.env.js'],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
-  setupFilesAfterEnv: ['./src/tests/jest.setup.js'],
+  setupFilesAfterEnv: ['<rootDir>/src/tests/jest.setup.js'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
