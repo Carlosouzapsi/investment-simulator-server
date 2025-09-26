@@ -18,23 +18,32 @@ class UserService {
     const { name, email, password } = userInputs;
 
     try {
+      // REGRA DE NEGÓCIO EMAIL VERIFICAR EMAIL DUPLICADO
+      const existingUser =
+        await this.repository.findUserByEmailRepository(email);
+
+      if (existingUser) {
+        throw new BadRequestError('This email is already in use.');
+      }
+
       let salt = await GenerateSalt();
 
       let userPassword = await GeneratePassword(password, salt);
 
-      const existentUser = await this.repository.createUserRepository({
+      const newUser = await this.repository.createUserRepository({
         name,
         email,
         password: userPassword,
         salt,
       });
+
       const token = await generateSignature({
         email: email,
-        _id: existentUser._id,
+        _id: newUser._id,
       });
-      return FormateData({ id: existentUser._id, token });
+      return FormateData({ id: newUser._id, token });
     } catch (error) {
-      throw new APIError('Data not found');
+      throw error;
     }
   }
 }
