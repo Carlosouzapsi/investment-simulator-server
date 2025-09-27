@@ -80,6 +80,24 @@ class UserService {
       throw error;
     }
   }
+
+  async getUserProfile(userId) {
+    try {
+      // 1. Delega a busca do usuário pelo ID para a camada de repositório.
+      const existingUser = await this.repository.findUserByIdRepository(userId);
+      // 2. Se o usuário não for encontrado (o que seria raro para um usuário autenticado, mas é uma boa verificação),
+      // lança um erro.
+      if (!existingUser) {
+        throw new BadRequestError('User not found.');
+      }
+      // 3. Retorna os dados do usuário formatados.
+      // É crucial NUNCA retornar a senha (password) ou o salt.
+      return FormateData(existingUser);
+    } catch (error) {
+      // Relança o erro para o handler global.
+      throw error;
+    }
+  }
 }
 
 module.exports = UserService;

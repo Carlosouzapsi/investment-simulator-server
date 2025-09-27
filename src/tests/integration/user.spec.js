@@ -2,7 +2,6 @@ const request = require('supertest');
 const express = require('express');
 const configureApp = require('../../express-app');
 const { user } = require('../../api');
-// Antes de cada teste, cria uma nova instância do app
 
 describe('User API - Integration Tests', () => {
   let app;
@@ -108,5 +107,34 @@ describe('User API - Integration Tests', () => {
     };
 
     await request(app).post('/user/signup').send(userData);
+  });
+
+  it('Should return user profile data for an authenticated user', async () => {
+    // --- 1. Preparar (Arrange) ---
+    // Primeiro, criamos um usuário para o teste.
+    const userData = {
+      name: 'Profile User',
+      email: 'profile@example.com',
+      password: 'password123',
+    };
+
+    await request(app).post('/user/signup').send(userData);
+
+    // Agora, fazemos login com esse usuário para obter um token de autenticação.
+    const loginResponse = await request(app).post('/user/signin').send({
+      email: userData.email,
+      password: userData.password,
+    });
+    // Extraímos o token da resposta do login.
+    const token = loginResponse.body.token;
+    // --- 2. Agir (Act) ---
+    // Fazemos a requisição para o endpoint de perfil, enviando o token no cabeçalho de autorização.
+    // O formato padrão é 'Bearer {token}'.
+    const profileResponse = await request(app)
+      .get('/user/profile')
+      .set('Authorization', `Bearer ${token}`);
+    // --- 3. Verificar (Assert) ---
+    // Esperamos uma resposta de sucesso (200 OK).
+    expect(profileResponse.status).toBe(200);
   });
 });

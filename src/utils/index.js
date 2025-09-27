@@ -26,8 +26,10 @@ module.exports.GenerateSignature = async (payload) => {
   try {
     return await jwt.sign(payload, APP_SECRET, { expiresIn: '30d' });
   } catch (error) {
-    console.error(error);
-    return error;
+    // Lançar o erro garante que o fluxo seja interrompido
+    // em vez de continuar com um token inválido (que é um objeto de erro).
+    console.error('Error generating JWT signature:', error);
+    throw error;
   }
 };
 
@@ -35,8 +37,16 @@ module.exports.GenerateSignature = async (payload) => {
 module.exports.ValidateSignature = async (req) => {
   try {
     const signature = req.get('Authorization');
-    console.log(signature);
-    const payload = await jwt.verify(signature.split(' ')[1], APP_SECRET);
+    if (!signature) {
+      console.log('Authorization header is missing.');
+      return false;
+    }
+    const token = signature.split(' ')[1];
+    if (!token) {
+      console.log('Token is missing or malformed in Authorization header');
+      return false;
+    }
+    const payload = await jwt.verify(token, APP_SECRET);
     req.user = payload;
     return true;
   } catch (error) {

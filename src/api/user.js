@@ -23,4 +23,19 @@ module.exports = (app) => {
       next(error);
     }
   });
+
+  app.get('/user/profile', UserAuth, async (req, res, next) => {
+    // Middle adicionado aqui!
+    try {
+      // 1. O middleware 'UserAuth' já validou o token e adicionou
+      //    as informações do usuário (geralmente o ID) ao objeto 'req.user'.
+      //    Agora, podemos pegar o ID do usuário diretamente de 'req.user'.
+      const { _id } = req.user;
+      // 2. Chamamos o método de serviço para buscar o perfil.
+      const { data } = await service.getUserProfile(_id);
+      return res.json(data);
+    } catch (error) {
+      next(error);
+    }
+  });
 };
