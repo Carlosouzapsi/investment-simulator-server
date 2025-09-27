@@ -14,8 +14,9 @@ module.exports = async (app) => {
   app.use(cors());
   app.use(express.static(__dirname + '/public'));
 
-  // Configura a rota da documentação Swagger
+  // Configura a rota da documentação Swagger (UI)
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 
   user(app);
 
