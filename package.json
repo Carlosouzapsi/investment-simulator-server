@@ -23,7 +23,9 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.2",
     "nodemon": "^3.1.10",
-    "winston": "^3.17.0"
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@eslint/compat": "^1.4.0",

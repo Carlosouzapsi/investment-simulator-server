@@ -108,7 +108,6 @@ describe('User API - Integration Tests', () => {
 
     await request(app).post('/user/signup').send(userData);
   });
-
   it('Should return user profile data for an authenticated user', async () => {
     // --- 1. Preparar (Arrange) ---
     // Primeiro, criamos um usuário para o teste.
@@ -136,5 +135,95 @@ describe('User API - Integration Tests', () => {
     // --- 3. Verificar (Assert) ---
     // Esperamos uma resposta de sucesso (200 OK).
     expect(profileResponse.status).toBe(200);
+  });
+  it('Should update user password and allow login with new password', async () => {
+    // --- 1. Preparar (Arrange) ---
+    const initialUserData = {
+      name: 'Password Update User',
+      email: 'passupdate@example.com',
+      password: 'oldPassword123',
+    };
+
+    // Cria o usuário
+    await request(app).post('/user/signup').send(initialUserData);
+
+    // Faz login com a senha antiga para obter um token.
+    const loginResponse = await request(app).post('/user/signin').send({
+      email: initialUserData.email,
+      password: 'oldPassword123',
+    });
+
+    const token = loginResponse.body.token;
+    const newPasswordData = {
+      password: 'newPassword456',
+    };
+
+    // --- 2. Agir (Act) ---
+    // Atualiza a senha usando o token.
+    const updateResponse = await request(app)
+      .patch('/user/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newPasswordData);
+    // --- 3. Verificar (Assert) ---
+    // Verifica se a requisição de atualização foi bem-sucedida.
+    expect(updateResponse.status).toBe(200);
+
+    const newLoginResponse = await request(app).post('/user/signin').send({
+      email: initialUserData.email,
+      password: 'newPassword456',
+    });
+    // Espera que o login com a nova senha funcione (status 200).
+    expect(newLoginResponse.status).toBe(200);
+    expect(newLoginResponse.body).toHaveProperty('token');
+
+    // Tenta fazer login com a SENHA ANTIGA.
+    const oldLoginResponse = await request(app).post('/user/signin').send({
+      email: initialUserData.email,
+      password: 'oldPassword123',
+    });
+    // Espera que o login com a senha antiga falhe (status 400).
+    expect(oldLoginResponse.status).toBe(400);
+  });
+  it('Should update only the user name for an authenticated user', async () => {
+    // --- 1. Preparar (Arrange) ---
+    // Cria um usuário e faz login para obter um token.
+    const initialUserData = {
+      name: 'Initial Name Only',
+      email: 'name-update@example.com',
+      password: 'password123',
+    };
+    await request(app).post('/user/signup').send(initialUserData);
+
+    const loginResponse = await request(app).post('/user/signin').send({
+      email: initialUserData.email,
+      password: initialUserData.password,
+    });
+
+    const token = loginResponse.body.token;
+
+    // Define apenas o novo nome para a atualização.
+    const updatedNameData = { name: 'Just The Name Updated' };
+
+    // --- 2. Agir (Act) ---
+    // Faz a requisição PATCH para o endpoint de perfil.
+    const updateResponse = await request(app)
+      .patch('/user/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .send(updatedNameData);
+
+    // --- 3. Verificar (Assert) ---
+    // Espera uma resposta de sucesso.
+    expect(updateResponse.status).toBe(200);
+    // Verifica se a resposta contém o nome atualizado.
+    expect(updateResponse.body.name).toBe('Just The Name Updated');
+    // Verifica se o e-mail (que não foi atualizado) permaneceu o mesmo.
+    expect(updateResponse.body.email).toBe(initialUserData.email);
+
+    // Verificação extra: busca o perfil novamente para garantir a persistência.
+    const profileResponse = await request(app)
+      .get('/user/profile')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(profileResponse.body.name).toBe('Just The Name Updated');
   });
 });

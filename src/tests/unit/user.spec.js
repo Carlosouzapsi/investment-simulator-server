@@ -59,3 +59,37 @@ test('Should find an user by Id', async () => {
   expect(foundUser.id).toBe(user.id);
   expect(foundUser.email).toBe(userData.email);
 });
+test('Should update an existing user', async () => {
+  // --- 1. Preparar (Arrange) ---
+  // Cria um usuário inicial diretamente no banco de dados de teste.
+  const initialUserData = {
+    name: 'Initial Name',
+    email: 'update-repo@example.com',
+    password: 'password123',
+    salt: await GenerateSalt(),
+  };
+  const createdUser = await UserModel.create(initialUserData);
+
+  // Define os novos dados que queremos aplicar.
+  const updateData = { name: 'Updated Name From Repository Test' };
+
+  // --- 2. Agir (Act) ---
+  // Chama o método do repositório que queremos testar.
+  const updatedUser = await userRepository.updateUserRepository(
+    createdUser._id,
+    updateData
+  );
+
+  // --- 3. Verificar (Assert) ---
+  // Garante que o método retornou um usuário.
+  expect(updatedUser).not.toBeNull();
+  // Verifica se o nome no objeto retornado foi atualizado.
+  expect(updatedUser.name).toBe(updateData.name);
+  // Verifica se o e-mail (que não foi atualizado) permaneceu o mesmo.
+  expect(updatedUser.email).toBe(initialUserData.email);
+
+  // Verificação extra (opcional, mas recomendada):
+  // Busca o usuário diretamente no banco para garantir que a alteração foi persistida.
+  const userFromDb = await UserModel.findById(createdUser._id);
+  expect(userFromDb.name).toBe(updateData.name);
+});

@@ -98,6 +98,44 @@ class UserService {
       throw error;
     }
   }
+  async updateUserProfile(userId, userInputs) {
+    const { name, password } = userInputs;
+
+    try {
+      // Cria um objeto para armazenar os dados que serão atualizados.
+      const updateData = {};
+
+      if (name) {
+        updateData.name = name;
+      }
+      // Se uma nova senha foi fornecida, ela precisa ser criptografada.
+      if (password) {
+        // 1. Gera um novo "salt". É uma boa prática usar um novo salt a cada mudança de senha.
+        const salt = await GenerateSalt();
+        // 2. Gera o hash da nova senha com o novo salt.
+        const userPassword = await GeneratePassword(password, salt);
+        // 3. Adiciona a nova senha hasheada e o novo salt ao objeto de atualização.
+        updateData.password = userPassword;
+        updateData.salt = salt;
+      }
+      // Você pode retornar o perfil atual ou lançar um erro, dependendo da sua regra de negócio.
+      if (Object.keys(updateData).length === 0) {
+        // Vamos simplesmente retornar o perfil existente sem fazer uma chamada ao banco.
+        return this.getUserProfile(userId);
+      }
+      // Chama o repositório para aplicar as atualizações.
+      const updatedUser = await this.repository.updateUserRepository(
+        userId,
+        updateData
+      );
+      if (!updatedUser) {
+        throw new BadRequestError('User not found');
+      }
+      return FormateData(updatedUser);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 module.exports = UserService;

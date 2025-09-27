@@ -38,4 +38,19 @@ module.exports = (app) => {
       next(error);
     }
   });
+
+  app.patch('/user/profile', UserAuth, async (req, res, next) => {
+    try {
+      const { _id } = req.user;
+      const { name, password } = req.body;
+
+      const { data } = await service.updateUserProfile(_id, {
+        name,
+        password,
+      });
+      return res.json(data);
+    } catch (error) {
+      next(error);
+    }
+  });
 };
