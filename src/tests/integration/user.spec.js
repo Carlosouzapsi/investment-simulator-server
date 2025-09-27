@@ -64,5 +64,49 @@ describe('User API - Integration Tests', () => {
     expect(response.body.message).toContain('This email is already in use.'); // Verificamos parte da mensagem.
   });
 
-  it('Should authenticate an user and return a token on successful login', () => {});
+  it('Should authenticate an user and return a token on successful login', async () => {
+    // --- 1. Preparar (Arrange) ---
+    // Primeiro, criamos um usuário para poder testar o login.
+    const userData = {
+      name: 'Login Test user',
+      email: 'login@example.com',
+      password: 'password',
+    };
+    // ccadastra o usuário
+    await request(app).post('/user/signup').send(userData);
+
+    // --- 2. Agir (Act) ---
+    // Agora, tentamos fazer login com as credenciais corretas.
+    const response = await request(app).post('/user/signin').send({
+      email: userData.email,
+      password: userData.password,
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('token');
+  });
+  it('Should return a 400 error for a non-existent email', async () => {
+    // --- 1. Preparar (Arrange) ---
+    // Neste caso, não precisamos criar um usuário, pois o objetivo é testar um e-mail que não existe.
+    // --- 2. Agir (Act) ---
+    // Tentamos fazer login com um e-mail que garantidamente não está no banco.
+    const invalidUser = {
+      email: 'nonexistent@example.com',
+      password: 'any-password',
+    };
+    const response = await request(app).post('/user/signin').send(invalidUser);
+    console.log(response.body);
+  });
+  it('Should return a 400 error for an incorrect password', async () => {
+    // --- 1. Preparar (Arrange) ---
+    // Criamos outro usuário específico para este cenário de teste.
+    const userData = {
+      name: 'Wrong Pass User',
+      email: 'wrongpass@example.com',
+      password: 'password123',
+    };
+
+    await request(app).post('/user/signup').send(userData);
+  });
 });

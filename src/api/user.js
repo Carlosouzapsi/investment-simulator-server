@@ -13,4 +13,14 @@ module.exports = (app) => {
       next(error);
     }
   });
+
+  app.post('/user/signin', async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+      const { data } = await service.signIn({ email, password });
+      return res.json(data);
+    } catch (error) {
+      next(error);
+    }
+  });
 };

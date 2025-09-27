@@ -37,7 +37,7 @@ class UserService {
         salt,
       });
 
-      const token = await generateSignature({
+      const token = await GenerateSignature({
         email: email,
         _id: newUser._id,
       });

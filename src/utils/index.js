@@ -13,7 +13,7 @@ module.exports.GeneratePassword = async (password, salt) => {
 };
 
 // Valida se a senha fornecida corresponde à senha salva no banco de dados
-module.exports.validatePassword = async (
+module.exports.ValidatePassword = async (
   enteredPassword,
   savedPassword,
   salt
@@ -22,7 +22,7 @@ module.exports.validatePassword = async (
 };
 
 // Gera uma assinatura JWT (JSON Web Token)
-module.exports.generateSignature = async (payload) => {
+module.exports.GenerateSignature = async (payload) => {
   try {
     return await jwt.sign(payload, APP_SECRET, { expiresIn: '30d' });
   } catch (error) {
