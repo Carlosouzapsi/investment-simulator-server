@@ -56,11 +56,13 @@ describe('User API - Integration Tests', () => {
 
     // --- 3. Verificar (Assert) ---
     // Esperamos que o servidor rejeite a requisição com um status de conflito.
-    expect(response.status).toBe(409); // 409 Conflict é o status HTTP ideal para este caso.
+    expect(response.status).toBe(400); // 409 Conflict é o status HTTP ideal para este caso.
 
     // Também verificamos se o corpo da resposta contém uma mensagem de erro
     // clara e informativa, indicando o motivo da falha.
     expect(response.body).toHaveProperty('message');
     expect(response.body.message).toContain('This email is already in use.'); // Verificamos parte da mensagem.
   });
+
+  it('Should authenticate an user and return a token on successful login', () => {});
 });

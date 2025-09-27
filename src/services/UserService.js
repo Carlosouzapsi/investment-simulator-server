@@ -21,7 +21,7 @@ class UserService {
       // REGRA DE NEGÓCIO EMAIL VERIFICAR EMAIL DUPLICADO
       const existingUser =
         await this.repository.findUserByEmailRepository(email);
-
+      // Se o email já existem deve disparar o erro abaixo.
       if (existingUser) {
         throw new BadRequestError('This email is already in use.');
       }
@@ -42,6 +42,40 @@ class UserService {
         _id: newUser._id,
       });
       return FormateData({ id: newUser._id, token });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async signIn(userInputs) {
+    const { email, password } = userInputs;
+
+    try {
+      const existingUser =
+        await this.repository.findUserByEmailRepository(email);
+
+      if (!existingUser) {
+        throw new BadRequestError('Invalid credentials');
+      }
+      const validPassword = await ValidatePassword(
+        password,
+        existingUser.password,
+        existingUser.salt
+      );
+
+      if (!validPassword) {
+        throw new BadRequestError('Invalid credentials.');
+      }
+
+      const token = await GenerateSignature({
+        email: existingUser.email,
+        _id: existingUser._id,
+      });
+
+      return FormateData({
+        id: existingUser._id,
+        token,
+      });
     } catch (error) {
       throw error;
     }
