@@ -74,6 +74,7 @@ class UserService {
 
       return FormateData({
         id: existingUser._id,
+        name: existingUser.name,
         token,
       });
     } catch (error) {

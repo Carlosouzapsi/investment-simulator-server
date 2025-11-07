@@ -60,6 +60,9 @@ paths:
                 properties:
                   id:
                     type: string
+                  name:
+                    type: string
+                    example: 'John Doe'
                   token:
                     type: string
         '400':
